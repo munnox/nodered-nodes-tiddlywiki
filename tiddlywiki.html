@@ -1,9 +1,37 @@
 <script type="text/javascript">
+    // Config node
+    RED.nodes.registerType('tiddlywiki-server',{
+        category: 'config',
+        defaults: {
+            host: {value:"localhost",required:true},
+            port: {value:1234,required:true,validate:RED.validators.number()},
+        },
+        label: function() {
+            return this.host+":"+this.port;
+        }
+    });
+</script>
+
+<!-- Config server node -->
+<script type="text/html" data-template-name="tiddlywiki-server">
+    <div class="form-row">
+        <label for="node-config-input-host"><i class="fa fa-bookmark"></i> Host</label>
+        <input type="text" id="node-config-input-host">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-port"><i class="fa fa-bookmark"></i> Port</label>
+        <input type="text" id="node-config-input-port">
+    </div>
+</script>
+
+
+<script type="text/javascript">
     RED.nodes.registerType('tiddlywiki',{
         category: 'function',
         color: '#a6bbcf',
         defaults: {
-            name: {value:""}
+            name: {value:""},
+            server: {value: "", type: "tiddlywiki-server"}
         },
         inputs:1,
         outputs:1,
@@ -15,6 +43,12 @@
 </script>
 
 <script type="text/html" data-template-name="tiddlywiki">
+    <!-- Link the config node in here -->
+    <div class="form-row">
+        <label for="node-input-server"><i class="fa fa-tag"></i> Server</label>
+        <input type="text" id="node-input-server" placeholder="Server">
+    </div>
+
     <div class="form-row">
         <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
         <input type="text" id="node-input-name" placeholder="Name">
