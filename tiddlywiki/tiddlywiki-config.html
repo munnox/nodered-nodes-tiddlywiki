@@ -1,0 +1,57 @@
+<!--
+Defining the node config UI for the tiddlywiki-config to define a server and credenials
+Derived from core node https://github.com/node-red/node-red/blob/master/packages/node_modules/%40node-red/nodes/core/network/05-tls.html
+Author Robert Munnoch
+-->
+
+<script type="text/javascript">
+    RED.nodes.registerType('tiddlywiki-config',{
+        category: 'config',
+        defaults: {
+            url: {value:"http://localhost:5000"},
+            filter: {value: "[all[tiddlers]!is[system]sort[title]]"},
+            // hasbutton: {value: True}
+        },
+        credentials: {
+            username: {type:"text"},
+            password: {type:"password"}
+        },
+        label: function() {
+            return this.credentials.username+"@"+this.url+"|"+this.filter;
+        }
+    });
+</script>
+
+<script type="text/html" data-template-name="tiddlywiki-config">
+
+    <div class="form-row">
+        <label for="node-config-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-config-input-name" placeholder="Name">
+    </div>
+
+    <div class="form-row">
+        <label for="node-config-input-url"><i class="fa fa-tag"></i> URL</label>
+        <input type="text" id="node-config-input-url" placeholder="url">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-filter"><i class="fa fa-tag"></i> Filter</label>
+        <input type="text" id="node-config-input-filter" placeholder="Filter">
+    </div>
+    <!-- <div class="form-row">
+        <label for="node-input-hasbutton"><i class="fa fa-tag"></i> Button</label>
+        <input type="text" id="node-input-hasbutton">
+    </div> -->
+
+    <div class="form-row">
+        <label for="node-config-input-username"><i class="fa fa-tag"></i> Username</label>
+        <input type="text" id="node-config-input-username">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-password"><i class="fa fa-tag"></i> Password</label>
+        <input type="password" id="node-config-input-password">
+    </div>
+</script>
+
+<script type="text/html" data-help-name="tiddlywiki-config">
+    <p>A simple node that Requests tiddlers from a tiddlywiki node server based on a filter</p>
+</script>

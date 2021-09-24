@@ -1,0 +1,68 @@
+<!--
+Defining the node UI for the tiddlywiki-search
+Derived from core node https://github.com/node-red/node-red/blob/master/packages/node_modules/%40node-red/nodes/core/network/21-httprequest.js
+Author Robert Munnoch
+-->
+
+<script type="text/javascript">
+    RED.nodes.registerType('tiddlywiki-search',{
+        category: 'function',
+        color: '#a6bbcf',
+        defaults: {
+            name: {value:""},
+            url: {value:""},
+            filter: {value: "[all[tiddlers]!is[system]sort[title]]"},
+            // hasbutton: {value: True}
+            tiddlywiki: {type: "tiddlywiki-config",required: false}
+        },
+        credentials: {
+            username: {type:"text"},
+            password: {type:"password"}
+        },
+        inputs:1,
+        outputs:2,
+        icon: "file.png",
+        label: function() {
+            return this.name||"tiddlywiki-search";
+        }
+    });
+</script>
+
+<script type="text/html" data-template-name="tiddlywiki-search">
+    Testin
+    <!-- Link the config node in here -->
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+
+    <div class="form-row">
+        <label for="node-input-url"><i class="fa fa-tag"></i> URL</label>
+        <input type="text" id="node-input-url" placeholder="url">
+    </div>
+    <div class="form-row">
+        <label for="node-input-filter"><i class="fa fa-tag"></i> Filter</label>
+        <input type="text" id="node-input-filter" placeholder="Filter">
+    </div>
+    <!-- <div class="form-row">
+        <label for="node-input-hasbutton"><i class="fa fa-tag"></i> Button</label>
+        <input type="text" id="node-input-hasbutton">
+    </div> -->
+
+    <div class="form-row">
+        <label for="node-input-username"><i class="fa fa-tag"></i> Username</label>
+        <input type="text" id="node-input-username">
+    </div>
+    <div class="form-row">
+        <label for="node-input-password"><i class="fa fa-tag"></i> Password</label>
+        <input type="password" id="node-input-password">
+    </div>
+    <div class="form-row">
+        <label for="node-input-tiddlywiki"><i class="fa fa-tag"></i> Tiddlywiki Server</label>
+        <input type="text" id="node-input-tiddlywiki">
+    </div>
+</script>
+
+<script type="text/html" data-help-name="tiddlywiki-search">
+    <p>A simple node that Requests tiddlers from a tiddlywiki node server based on a filter</p>
+</script>

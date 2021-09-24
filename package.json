@@ -2,15 +2,15 @@
   "name": "nodered_tiddlywiki",
   "version": "0.1.0",
   "description": "",
-  "main": "tiddlywiki.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
-  "license": "ISC",
+  "license": "GPLv3",
   "node-red": {
     "nodes": {
-      "lower-case": "tiddlywiki.js"
+      "tiddlywiki-search": "tiddlywiki/tiddlywiki-search.js",
+      "tiddlywiki-config": "tiddlywiki/tiddlywiki-config.js"
     }
   }
 }
