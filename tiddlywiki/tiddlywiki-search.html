@@ -12,8 +12,9 @@ Author Robert Munnoch
             name: {value:""},
             url: {value:""},
             filter: {value: "[all[tiddlers]!is[system]sort[title]]"},
+            timeout: {value: 2000},
             // hasbutton: {value: True}
-            tiddlywiki: {type: "tiddlywiki-config",required: false}
+            tiddlywiki: {type: "tiddlywiki-config", required: false}
         },
         credentials: {
             username: {type:"text"},
@@ -44,10 +45,10 @@ Author Robert Munnoch
         <label for="node-input-filter"><i class="fa fa-tag"></i> Filter</label>
         <input type="text" id="node-input-filter" placeholder="Filter">
     </div>
-    <!-- <div class="form-row">
-        <label for="node-input-hasbutton"><i class="fa fa-tag"></i> Button</label>
-        <input type="text" id="node-input-hasbutton">
-    </div> -->
+    <div class="form-row">
+        <label for="node-input-timeout"><i class="fa fa-tag"></i> Timeout (ms)</label>
+        <input type="number" id="node-input-timeout" placeholder="Milliseconds">
+    </div>
 
     <div class="form-row">
         <label for="node-input-username"><i class="fa fa-tag"></i> Username</label>

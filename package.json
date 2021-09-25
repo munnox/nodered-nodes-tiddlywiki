@@ -9,8 +9,8 @@
   "license": "GPLv3",
   "node-red": {
     "nodes": {
-      "tiddlywiki-search": "tiddlywiki/tiddlywiki-search.js",
-      "tiddlywiki-config": "tiddlywiki/tiddlywiki-config.js"
+      "tiddlywiki-config": "tiddlywiki/tiddlywiki-config.js",
+      "tiddlywiki-search": "tiddlywiki/tiddlywiki-search.js"
     }
   }
 }
