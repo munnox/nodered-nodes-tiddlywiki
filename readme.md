@@ -1,5 +1,13 @@
 # NodeRED Tiddlywiki Node
 
+## Use
+
+```bash
+npm install munnox/nodered_tiddlywiki_nodes
+```
+
+## Develop
+
 To build a custom tiddly wiki node.
 
 ```bash
