@@ -11,7 +11,8 @@
     "nodes": {
       "tiddlywiki-config": "tiddlywiki/tiddlywiki-config.js",
       "tiddlywiki-search": "tiddlywiki/tiddlywiki-search.js",
-      "tiddlywiki-get": "tiddlywiki/tiddlywiki-get.js"
+      "tiddlywiki-get": "tiddlywiki/tiddlywiki-get.js",
+      "tiddlywiki-save": "tiddlywiki/tiddlywiki-save.js"
     }
   }
 }
