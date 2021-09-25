@@ -8,9 +8,9 @@ module.exports = function(RED) {
 
     function TiddlywikiConfigNode(config) {
         RED.nodes.createNode(this,config);
-        this.name = config.name;
-        this.url = config.url || "http://localhost:5000";
-        this.filter = config.filter || "[all[tiddlers]!is[system]sort[title]]";
+        this.name = config.name || this.credentials.username+"@"+config.url;
+        this.url = config.url;
+        this.auth_required = config.authorisation_required;
 
         // Further debug information
         // this.username = this.credentials.username || "user";

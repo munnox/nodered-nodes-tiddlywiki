@@ -8,34 +8,25 @@ module.exports = function(RED) {
 
     function TiddlywikiSearchNode(config) {
         RED.nodes.createNode(this,config);
+        var node = this;
+        node.name = config.name || node.type;
+        node.config = config;
+        node.config.timeout = parseInt(node.config.timeout);
 
         // If the tiddlywiki server config node is defined then use it other wise fall back to local information
         if (config.tiddlywiki) {
-            var server = RED.nodes.getNode(config.tiddlywiki)
-            server.url = config.url || server.url;
-            // Use the filter from the node faling back to the server default.
-            server.filter = config.filter || server.filter;
+            node.server = RED.nodes.getNode(config.tiddlywiki)
         }
         else {
-            var server = {
-                url: config.url,
-                filter: config.filter,
-                credentials: {
-                    username: this.credentials.username,
-                    password: this.credentials.password,
-                }
-            }
-            // node.error(RED._("tiddlywiki.errors.no-server"),msg);
-            // nodeDone();
-            // return;
+            node.error(RED._("tiddlywiki.errors.no-server"),msg);
+            nodeDone();
+            return;
         }
-        var node = this;
-        node.config = config;
-        node.config.timeout = parseInt(node.config.timeout);
-        node.server = server;
         // // Further debug code while node is in development
-        // node.error("Node debug:");
-        // node.error(JSON.parse(JSON.stringify(node)));
+        // node.warn("Node debug:");
+        // node.warn(JSON.parse(JSON.stringify(node)));
+
+        node.status({});
 
         const options = {
             prefixUrl: node.server.url,
@@ -46,7 +37,7 @@ module.exports = function(RED) {
             headers: {
                 "content-type": "application/json",
                 "X-Requested-With": "TiddlyWiki",
-                "Authorization": "Basic " + new Buffer(node.server.credentials.username + ':' + node.server.credentials.password).toString('base64')
+                "Authorization": "Basic " + new Buffer.from(node.server.credentials.username + ':' + node.server.credentials.password).toString('base64')
             } 
         }
         var nodeContext = this.context();
@@ -62,6 +53,8 @@ module.exports = function(RED) {
             nodeContext.set("failures", parseInt(nodeContext.get("failures"))+1);
             nodeContext.set("rate", parseInt(nodeContext.get("successes"))/(parseFloat(nodeContext.get("successes")) + parseInt(nodeContext.get("failures"))));
         }
+
+        var promise =null;
     
         node.search = function(msg, nodeSend, nodeDone) {
             node.trace("Running Tiddlywiki Search")
@@ -71,16 +64,16 @@ module.exports = function(RED) {
 
             // If the input msg has a filter defined allow that to override node filter
             if (msg.filter == undefined) {
-                msg.filter = node.server.filter;
+                msg.filter = node.config.filter;
             }
 
             // the filter does not seem to nee encoding
             var filter = encodeURIComponent(msg.filter);
             // var filter = msg.filter;
-            var url = `recipes/default/tiddlers.json?filter=${filter}`;
+            var path = `recipes/default/tiddlers.json?filter=${filter}`;
 
             var result = null
-            got(url, options).then(res => {
+            promise = got(path, options).then(res => {
                 // node.warn("Success")
                 msg.options = options;
                 msg.statusCode = res.statusCode;
@@ -88,11 +81,11 @@ module.exports = function(RED) {
                 msg.responseUrl = res.url;
                 msg.payload = res.body;
 
+                // Calculate request time
+                var diff = process.hrtime(preRequestTimestamp);
+                var ms = diff[0] * 1e3 + diff[1] * 1e-6;
+                var metricRequestDurationMillis = ms.toFixed(3);
                 if (node.metric()) {
-                    // Calculate request time
-                    var diff = process.hrtime(preRequestTimestamp);
-                    var ms = diff[0] * 1e3 + diff[1] * 1e-6;
-                    var metricRequestDurationMillis = ms.toFixed(3);
                     node.metric("duration.millis", msg, metricRequestDurationMillis);
                     if (res.client && res.client.bytesRead) {
                         node.metric("size.bytes", msg, res.client.bytesRead);
@@ -110,8 +103,8 @@ module.exports = function(RED) {
                     // Add context to the tiddlers recovered
                     msg.tiddlers.map((tid) => {
                         tid.context = {
-                            wiki_url: server.url,
-                            filter: filter
+                            wiki_url: node.server.url,
+                            filter: node.config.filter
                         }
                         return tid;
                     });
@@ -147,6 +140,8 @@ module.exports = function(RED) {
                 node.status(status);
                 nodeSend(result);
                 nodeDone();
+            }, (res) => {
+                node.error("errored:" + res);
             }).catch(err => {
                 incfailures();
                 if (node.metric()) {
@@ -176,6 +171,11 @@ module.exports = function(RED) {
                 nodeSend([null,msg]);
                 nodeDone();
             });
+            // setTimeout(() => {
+            //     promise.cancel("Timeout");
+            // }, 1000);
+            // nodeContext.set("promise", promise);
+            // node.error(`promise: ${promise}`);
             
         }
 
@@ -184,10 +184,5 @@ module.exports = function(RED) {
         });
 
     }
-    RED.nodes.registerType("tiddlywiki-search", TiddlywikiSearchNode, {
-        credentials: {
-            username: {type:"text"},
-            password: {type:"password"}
-        }
-    });
+    RED.nodes.registerType("tiddlywiki-search", TiddlywikiSearchNode);
 }

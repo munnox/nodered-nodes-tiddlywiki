@@ -10,19 +10,14 @@ Author Robert Munnoch
         color: '#a6bbcf',
         defaults: {
             name: {value:""},
-            url: {value:""},
             filter: {value: "[all[tiddlers]!is[system]sort[title]]"},
             timeout: {value: 2000},
             // hasbutton: {value: True}
-            tiddlywiki: {type: "tiddlywiki-config", required: false}
-        },
-        credentials: {
-            username: {type:"text"},
-            password: {type:"password"}
+            tiddlywiki: {type: "tiddlywiki-config", required: true}
         },
         inputs:1,
         outputs:2,
-        icon: "file.png",
+        icon: "font-awesome/fa-search",
         label: function() {
             return this.name||"tiddlywiki-search";
         }
@@ -30,40 +25,40 @@ Author Robert Munnoch
 </script>
 
 <script type="text/html" data-template-name="tiddlywiki-search">
-    Testin
-    <!-- Link the config node in here -->
     <div class="form-row">
         <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
         <input type="text" id="node-input-name" placeholder="Name">
     </div>
-
     <div class="form-row">
-        <label for="node-input-url"><i class="fa fa-tag"></i> URL</label>
-        <input type="text" id="node-input-url" placeholder="url">
+        <label for="node-input-tiddlywiki"><i class="fa fa-database"></i> Tiddlywiki Server</label>
+        <input type="text" id="node-input-tiddlywiki">
     </div>
     <div class="form-row">
-        <label for="node-input-filter"><i class="fa fa-tag"></i> Filter</label>
+        <label for="node-input-filter"><i class="fa fa-search"></i> Filter</label>
         <input type="text" id="node-input-filter" placeholder="Filter">
     </div>
     <div class="form-row">
-        <label for="node-input-timeout"><i class="fa fa-tag"></i> Timeout (ms)</label>
+        <label for="node-input-timeout"><i class="fa fa-clock-o"></i> Timeout (ms)</label>
         <input type="number" id="node-input-timeout" placeholder="Milliseconds">
     </div>
 
-    <div class="form-row">
-        <label for="node-input-username"><i class="fa fa-tag"></i> Username</label>
-        <input type="text" id="node-input-username">
-    </div>
-    <div class="form-row">
-        <label for="node-input-password"><i class="fa fa-tag"></i> Password</label>
-        <input type="password" id="node-input-password">
-    </div>
-    <div class="form-row">
-        <label for="node-input-tiddlywiki"><i class="fa fa-tag"></i> Tiddlywiki Server</label>
-        <input type="text" id="node-input-tiddlywiki">
-    </div>
 </script>
 
 <script type="text/html" data-help-name="tiddlywiki-search">
-    <p>A simple node that Requests tiddlers from a tiddlywiki node server based on a filter</p>
+    <p>
+        A simple node that Requests tiddlers from a tiddlywiki node server
+        based on a <a href="https://tiddlywiki.com/static/Filters.html">filter</a>
+        composed of a number of steps made out of
+        <a href="https://tiddlywiki.com/static/Filter%2520Operators.html">operators</a>.
+    </p>
+    <p>
+        By default a tiddlywiki server protects is search by only letting a fix number of search be run.
+        This can be changed by setting a config tiddler <code>$:/config/Server/AllowAllExternalFilters</code> with a text value of yes.
+        <ul>
+            <li>Default built in filter: <code>[all[tiddlers]!is[system]sort[title]]</code></li>
+            <li>Get all nodes edited in last day: <code>[all[tiddlers]days[~1]sort[title]]</code></li>
+            <li>Get all shadow tiddlers tags as stylesheets: <code>[all[shadows]tag[$:/tags/Stylesheet]]</code></li>
+            <li>Get all tiddlers that are type with 'application/zip' without a '_canonical_uri': <code>[all[tiddlers]field:type[application/zip]field:_canonical_uri[]]</code></li>
+        </ul>
+    </p>
 </script>
