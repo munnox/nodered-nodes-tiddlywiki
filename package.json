@@ -10,7 +10,8 @@
   "node-red": {
     "nodes": {
       "tiddlywiki-config": "tiddlywiki/tiddlywiki-config.js",
-      "tiddlywiki-search": "tiddlywiki/tiddlywiki-search.js"
+      "tiddlywiki-search": "tiddlywiki/tiddlywiki-search.js",
+      "tiddlywiki-get": "tiddlywiki/tiddlywiki-get.js"
     }
   }
 }

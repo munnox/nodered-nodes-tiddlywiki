@@ -1,0 +1,61 @@
+<!--
+Defining the node UI for the tiddlywiki-search
+Derived from core node https://github.com/node-red/node-red/blob/master/packages/node_modules/%40node-red/nodes/core/network/21-httprequest.js
+Author Robert Munnoch
+-->
+
+<script type="text/javascript">
+    RED.nodes.registerType('tiddlywiki-get',{
+        category: 'tiddlywiki',
+        color: '#a6bbcf',
+        defaults: {
+            name: {value:""},
+            tiddlywiki: {type: "tiddlywiki-config", required: true},
+            title: {value:""},
+            timeout: {value: 2000}
+        },
+        inputs:1,
+        outputs:2,
+        icon: "font-awesome/fa-download",
+        label: function() {
+            return this.name||"tiddlywiki-get";
+        }
+    });
+</script>
+
+<script type="text/html" data-template-name="tiddlywiki-get">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    <div class="form-row">
+        <label for="node-input-tiddlywiki"><i class="fa fa-database"></i> Tiddlywiki Server</label>
+        <input type="text" id="node-input-tiddlywiki">
+    </div>
+    <div class="form-row">
+        <label for="node-input-title"><i class="fa fa-tag"></i> Title</label>
+        <input type="text" id="node-input-title" placeholder="Title">
+    </div>
+    <div class="form-row">
+        <label for="node-input-timeout"><i class="fa fa-clock-o"></i> Timeout (ms)</label>
+        <input type="number" id="node-input-timeout" placeholder="Milliseconds">
+    </div>
+
+</script>
+
+<script type="text/html" data-help-name="tiddlywiki-get">
+    <p>
+        A simple node that Requests a tiddler from a tiddlywiki node server.
+        The node takes information from a tiddler held in the msg:
+        <pre>
+            {
+                tiddler: {
+                    title:
+                    context: {
+                        wiki_url: <wiki_url>
+                    }
+                }
+            }
+        </pre>
+    </p>
+</script>

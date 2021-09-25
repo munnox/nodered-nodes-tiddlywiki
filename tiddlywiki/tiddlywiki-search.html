@@ -6,14 +6,13 @@ Author Robert Munnoch
 
 <script type="text/javascript">
     RED.nodes.registerType('tiddlywiki-search',{
-        category: 'function',
+        category: 'tiddlywiki',
         color: '#a6bbcf',
         defaults: {
             name: {value:""},
+            tiddlywiki: {type: "tiddlywiki-config", required: true},
             filter: {value: "[all[tiddlers]!is[system]sort[title]]"},
-            timeout: {value: 2000},
-            // hasbutton: {value: True}
-            tiddlywiki: {type: "tiddlywiki-config", required: true}
+            timeout: {value: 2000}
         },
         inputs:1,
         outputs:2,

@@ -2,11 +2,13 @@
 // Derived from core node https://github.com/node-red/node-red/blob/master/packages/node_modules/%40node-red/nodes/core/network/21-httprequest.js
 // Author Robert Munnoch
 
+const { SSL_OP_MICROSOFT_BIG_SSLV3_BUFFER } = require("constants");
+
 module.exports = function(RED) {
     "use strict";
     const got = require("got");
 
-    function TiddlywikiSearchNode(config) {
+    function TiddlywikiGetNode(config) {
         RED.nodes.createNode(this,config);
         var node = this;
         node.name = config.name || node.type;
@@ -57,20 +59,36 @@ module.exports = function(RED) {
         var promise =null;
     
         node.search = function(msg, nodeSend, nodeDone) {
-            node.trace("Running Tiddlywiki Search")
+            node.trace("Running Tiddlywiki Get")
             var preRequestTimestamp = process.hrtime();
 
             node.status({fill:"blue",shape:"dot",text:"tiddlywiki.status.requesting"});
 
+            if (msg.tidder && msg.tidder.context && msg.tiddler.context.wiki_url) {
+                options.prefixUrl = msg.tiddler.context.wiki_url;
+            }
+
+            if (options.prefixUrl != node.server.url) {
+                node.error(`Wrong server url found in tiddler than in credenials ${options.prefixUrl} ${node.server.url}`);
+                nodeDone()
+                return
+            }
+
             // If the input msg has a filter defined allow that to override node filter
-            if (msg.filter == undefined) {
-                msg.filter = node.config.filter;
+            var title = node.config.title; 
+            if (msg.tiddler != undefined) {
+                if (msg.tiddler.title != undefined) {
+                    title = msg.tiddler.title;
+                }
+            }
+            else if (msg.title != undefined) {
+                title = msg.title;
             }
 
             // the filter does not seem to nee encoding
-            var filter = encodeURIComponent(msg.filter);
+            title = encodeURIComponent(title);
             // var filter = msg.filter;
-            var path = `recipes/default/tiddlers.json?filter=${filter}`;
+            var path = `recipes/default/tiddlers/${title}`;
 
             var result = null
             promise = got(path, options).then(res => {
@@ -88,25 +106,17 @@ module.exports = function(RED) {
                 }
 
                 msg.responseTime = ms;
-                // nodeContext.set("lastrequest", ms);
+                nodeContext.set("lastrequest", ms);
 
                 if (res.statusCode == 200) {
                     var preProcessTimestamp = process.hrtime();
                     msg.status = "success";
-
-                    try { msg.tiddlers = JSON.parse(res.body); } // obj
+                    try { msg.tiddler = JSON.parse(res.body); } // obj
                     catch(e) { node.error(RED._("tiddlywiki.errors.json-error")); }
                     // Add context to the tiddlers recovered
-                    msg.tiddlers.map((tid) => {
-                        tid.context = {
-                            wiki_url: node.server.url,
-                            filter: node.config.filter
-                        }
-                        return tid;
-                    });
-                    delete msg.payload;
-                    delete msg.url;
-                    delete msg.statusCode;
+                    // delete msg.payload;
+                    // delete msg.url;
+                    // delete msg.statusCode;
                     // delete msg.topic;
                     // delete msg.headers;
                     // delete msg.responseUrl;
@@ -129,6 +139,7 @@ module.exports = function(RED) {
                     // msg.headers = res.headers;
                     msg.responseUrl = res.url;
                     msg.payload = res.body;
+
                     var status = { fill: "red", shape: "circle", text: "Failure" };
                     node.status(status);
                     node.error(RED._("tiddlywiki.errors.server_error"));
@@ -185,5 +196,5 @@ module.exports = function(RED) {
         });
 
     }
-    RED.nodes.registerType("tiddlywiki-search", TiddlywikiSearchNode);
+    RED.nodes.registerType("tiddlywiki-get", TiddlywikiGetNode);
 }
