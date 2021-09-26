@@ -1,18 +1,26 @@
 {
-  "name": "nodered_tiddlywiki",
+  "name": "nodered-nodes-tiddlywiki",
   "version": "0.1.0",
   "description": "",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "pack": "npm pack",
+    "upload": "curl -X POST --compressed -F tarball=@'nodered-nodes-tiddlywiki-0.1.0.tgz' 'http://localhost:1880/nodes'",
+    "delete": "curl 'http://localhost:1880/nodes/nodered-nodes-tiddlywiki' -X DELETE",
+    "testserver": "docker run -d -p 1880:1880 --name mynodered -v `pwd`/:/local/  nodered/node-red",
+    "testinstall": "docker exec mynodered npm install /local/",
+    "testrestart": "docker restart mynodered",
+    "testlogs": "docker logs -f mynodered",
+    "testremove": "docker rm -f mynodered"
   },
-  "author": "",
+  "author": "Robert Munnoch",
   "license": "GPLv3",
   "node-red": {
     "nodes": {
-      "tiddlywiki-config": "tiddlywiki/tiddlywiki-config.js",
-      "tiddlywiki-search": "tiddlywiki/tiddlywiki-search.js",
-      "tiddlywiki-get": "tiddlywiki/tiddlywiki-get.js",
-      "tiddlywiki-save": "tiddlywiki/tiddlywiki-save.js"
+      "tiddlywiki-config": "tiddlywiki/config.js",
+      "tiddlywiki-search": "tiddlywiki/search.js",
+      "tiddlywiki-get": "tiddlywiki/get.js",
+      "tiddlywiki-save": "tiddlywiki/save.js"
     }
   }
 }
